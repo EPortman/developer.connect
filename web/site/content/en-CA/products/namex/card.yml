@@ -1,0 +1,7 @@
+# Used to populate product card components
+name: Name Registry
+description: Submit and manage name requests for businesses operating in B.C. through the registry.
+badge: Stable
+bulletPoints: 
+  - Request and reserve a business name based on the legal type
+  - View naming rules and check the status of existing name requests

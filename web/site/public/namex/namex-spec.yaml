@@ -1,0 +1,1184 @@
+---
+swagger: '2.0'
+basePath: "/api/v1"
+paths:
+  "/businesses/{corp_num}":
+    parameters:
+    - description: Incorporation Number - This field is required
+      name: corp_num
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_entity_api
+      tags:
+      - entity
+  "/colin/{corp_num}":
+    parameters:
+    - description: Incorporation Number - This field is required
+      name: corp_num
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Handles GET requests to retrieve business, office, and parties data
+        for a given corporation number
+      description: |-
+        Args:
+            corp_num (str): The corporation number.
+
+        Returns:
+            Response: A Flask response object with the business data in JSON format.
+      operationId: get_colin_api
+      tags:
+      - colin
+  "/documents:{analysis}":
+    parameters:
+    - name: analysis
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_document_analysis
+      tags:
+      - namexDocuments
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_document_analysis
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/document"
+      tags:
+      - namexDocuments
+  "/events/event/{event_id}":
+    parameters:
+    - name: event_id
+      in: path
+      required: true
+      type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Retrieve a single event by its event_id
+      description: |-
+        :param event_id: ID of the event
+        :return: JSON representation of the event or an error message
+      operationId: get_single_event
+      tags:
+      - events
+    patch:
+      responses:
+        '200':
+          description: Success
+      summary: Update the resend_date in the event's eventJson
+      operationId: patch_single_event
+      tags:
+      - events
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Resend a notification for a specific event by its event_id
+      description: |-
+        :param event_id: ID of the event
+        :return: Response indicating success or failure
+      operationId: post_single_event
+      tags:
+      - events
+  "/events/{nr}":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_events
+      tags:
+      - events
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Record a new event for a Name Request
+      description: |-
+        :param nr: Name Request number
+        :return: Response indicating success or failure
+      operationId: post_events
+      tags:
+      - events
+  "/exact-match":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_exact_match
+      tags:
+      - exactMatchMeta
+  "/meta/info":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_info
+      tags:
+      - namexRequestMeta
+  "/mras-profile/{province}/{corp_num}":
+    parameters:
+    - description: Province - This field is required
+      name: province
+      in: path
+      required: true
+      type: string
+    - description: Incorporation Number - This field is required
+      name: corp_num
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_mras_profile
+      tags:
+      - mras
+  "/name-analysis/":
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get structure analysis for a name
+      operationId: get_name_analysis
+      parameters:
+      - description: A company / organization name string
+        name: name
+        type: string
+        in: query
+      - description: A location code [ BC (only)]
+        name: location
+        type: string
+        in: query
+      - description: An entity type code [ CR, UL, CC ]
+        name: entity_type_cd
+        type: string
+        in: query
+      - description: A request action code [ NEW ]
+        name: request_action_cd
+        type: string
+        in: query
+      - description: "[ designation, structure ]"
+        name: analysis_type
+        type: string
+        in: query
+      - description: "[ BC, XPRO ]"
+        name: jurisdiction
+        type: string
+        in: query
+      tags:
+      - nameAnalysis
+  "/namerequests/":
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Name request search
+      operationId: get_name_requests_resource
+      tags:
+      - nameAnalysis
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: Create a new name request
+      operationId: post_name_requests_resource
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/name_request"
+      tags:
+      - nameAnalysis
+  "/namerequests/{nr_id}":
+    parameters:
+    - description: NR ID - This field is required
+      name: nr_id
+      in: path
+      required: true
+      type: integer
+    put:
+      responses:
+        '200':
+          description: Success
+      summary: NOT used for Existing Name Request updates that only change the Name
+        Request
+      description: |-
+        Use 'patch' instead.
+        State changes handled include state changes to [DRAFT, COND_RESERVE, RESERVED, COND_RESERVE to CONDITIONAL, RESERVED to APPROVED]
+        :param nr_id:
+        :return:
+      operationId: put_name_request_resource
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/name_request"
+      tags:
+      - nameAnalysis
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Name Request GET endpoint
+      operationId: get_name_request_resource
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/name_request"
+      tags:
+      - nameAnalysis
+  "/namerequests/{nr_id}/result":
+    parameters:
+    - description: NR ID - This field is required
+      name: nr_id
+      in: path
+      required: true
+      type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_report_resource
+      tags:
+      - nameAnalysis
+  "/namerequests/{nr_id}/rollback/{action}":
+    parameters:
+    - description: NR Number - This field is required
+      name: nr_id
+      in: path
+      required: true
+      type: integer
+    - name: action
+      in: path
+      required: true
+      type: string
+    patch:
+      responses:
+        '200':
+          description: Success
+      summary: Roll back a Name Request to a usable state in case of a frontend error
+      description: |-
+        :param nr_id:
+        :param action:
+        :return:
+      operationId: patch_name_request_rollback
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/name_request"
+      tags:
+      - nameAnalysis
+  "/namerequests/{nr_id}/{nr_action}":
+    parameters:
+    - description: NR ID - This field is required
+      name: nr_id
+      in: path
+      required: true
+      type: integer
+    - description: NR Action - One of [CHECKOUT, CHECKIN, EDIT, CANCEL, RESEND, REQUEST_REFUND]
+      name: nr_action
+      in: path
+      required: true
+      type: string
+    patch:
+      responses:
+        '200':
+          description: Success
+      summary: Update a specific set of fields and/or a provided action
+      description: |-
+        Fields excluded from the payload will not be updated.
+        The following data format is expected when providing a data payload:
+        { 'stateCd': 'CANCELLED' }  # Fields to update
+
+        We use this to:
+        - Edit a subset of NR fields
+        - Cancel an NR
+        - Change the state of an NR
+        :param nr_id:
+        :param nr_action: One of [CHECKOUT, CHECKIN, EDIT, CANCEL, RESEND]
+        :return:
+      operationId: patch_name_request_fields
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/name_request"
+      tags:
+      - nameAnalysis
+  "/nr-ops/healthz":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_healthz
+      tags:
+      - namexRequestOPS
+  "/nr-ops/readyz":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_readyz
+      tags:
+      - namexRequestOPS
+  "/payment-societies":
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_payment_societies
+      tags:
+      - payment_society
+  "/payment-societies/{nr}":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_payment_societies_search
+      tags:
+      - payment_society
+  "/payments/fees":
+    post:
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+      operationId: post_payment_fees
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/CalculateFeesRequest"
+      tags:
+      - payments
+  "/payments/sbc-pay/extra":
+    delete:
+      responses:
+        '200':
+          description: Success
+      operationId: delete_sbc_payment_extra
+      parameters:
+      - description: ''
+        name: ''
+        type: string
+        in: query
+      tags:
+      - payments
+  "/payments/sbc-pay/{payment_identifier}":
+    parameters:
+    - description: ''
+      name: payment_identifier
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_sbc_payment
+      tags:
+      - payments
+  "/payments/{nr_id}":
+    parameters:
+    - name: nr_id
+      in: path
+      required: true
+      type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get endpoint
+      operationId: get_find_name_request_payments
+      tags:
+      - payments
+  "/payments/{nr_id}/payment/{payment_id}":
+    parameters:
+    - description: ''
+      name: nr_id
+      in: path
+      required: true
+      type: integer
+    - description: ''
+      name: payment_id
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Get endpoint
+      operationId: get_name_request_payment
+      tags:
+      - payments
+    delete:
+      responses:
+        '200':
+          description: Success
+      summary: Delete endpoint
+      operationId: delete_name_request_payment
+      tags:
+      - payments
+  "/payments/{nr_id}/payment/{payment_id}/{payment_action}":
+    parameters:
+    - description: NR Number - This field is required
+      name: nr_id
+      in: path
+      required: true
+      type: integer
+    - description: Payment NR Action - One of [CREATE, UPGRADE, REAPPLY, REFUND]
+      name: payment_action
+      in: path
+      required: true
+      type: string
+    - name: payment_id
+      in: path
+      required: true
+      type: integer
+    patch:
+      responses:
+        '200':
+          description: Success
+      summary: ":param nr_id:"
+      description: |-
+        :param payment_id:
+        :param payment_action:
+        :return:
+      operationId: patch_name_request_payment_action
+      tags:
+      - payments
+  "/payments/{nr_id}/{payment_action}":
+    post:
+      responses:
+        '200':
+          description: Success
+      summary: At this point, the Name Request will still be using a TEMPORARY NR
+        number
+      description: |-
+        Confirming the payment on the frontend triggers this endpoint. Here, we:
+        - Create the payment via SBC Pay.
+        - If payment creation is successful, create a corresponding payment record in our system.
+        :param nr_id:
+        :param payment_action:
+        :return:
+      operationId: post_create_name_request_payment
+      parameters:
+      - name: nr_id
+        in: path
+        required: true
+        type: integer
+        description: Name Request number
+      - name: payment_action
+        in: path
+        required: true
+        type: string
+        description: Payment NR Action - One of [CREATE, UPGRADE, REAPPLY, RESUBMIT]
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/PaymentRequest"
+      tags:
+      - payments
+  "/payments/{payment_id}/receipt":
+    parameters:
+    - description: ''
+      name: payment_id
+      in: path
+      required: true
+      type: integer
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_payment_receipt
+      tags:
+      - payments
+    post:
+      responses:
+        '201':
+          description: Created
+      operationId: post_payment_receipt
+      tags:
+      - payments
+  "/requests":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_requests
+      tags:
+      - namexRequests
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_requests
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/Request"
+      tags:
+      - namexRequests
+  "/requests/cobrsphonetics/{name}/{advanced_search}":
+    parameters:
+    - name: name
+      in: path
+      required: true
+      type: string
+    - name: advanced_search
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_cobrs_phonetic_bucket
+      tags:
+      - namexRequests
+  "/requests/decisionreasons":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_decision_reasons
+      tags:
+      - namexRequests
+  "/requests/echo":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_echo
+      tags:
+      - namexRequests
+  "/requests/phonetics/{name}/{advanced_search}":
+    parameters:
+    - name: name
+      in: path
+      required: true
+      type: string
+    - name: advanced_search
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_phonetic_bucket
+      tags:
+      - namexRequests
+  "/requests/queues/@me/oldest":
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Gets the oldest nr num, that is in DRAFT status
+      description: |-
+        It then marks the NR as INPROGRESS, and assigns it to the User as found in the JWT
+        It also moves control of the Request from NRO so that NameX fully owns it
+
+        :Authorization: (JWT): valid JWT with the User.APPROVER role
+
+        :return: (str) (dict) (https status): 500, 404, or NR NUM, or NR NUM and a system alert in the dict
+      operationId: get_requests_queue
+      tags:
+      - namexRequests
+  "/requests/search":
+    get:
+      responses:
+        '200':
+          description: Success
+      summary: Query for name requests with partial matching for both NR number and
+        name
+      description: 'example: query=NR3742302 or query=abcd'
+      operationId: get_request_search
+      tags:
+      - namexRequests
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_request_search
+      tags:
+      - namexRequests
+  "/requests/stats":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_stats
+      tags:
+      - namexRequests
+  "/requests/synonymbucket/{name}/{advanced_search}":
+    parameters:
+    - name: name
+      in: path
+      required: true
+      type: string
+    - name: advanced_search
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_synonym_bucket
+      tags:
+      - namexRequests
+  "/requests/{nr}":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    put:
+      responses:
+        '200':
+          description: Success
+      operationId: put_request
+      tags:
+      - namexRequests
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_request
+      tags:
+      - namexRequests
+    patch:
+      responses:
+        '200':
+          description: Success
+      summary: Patches the NR
+      description: |-
+        Currently only handles STATE (with optional comment) and Previous State.
+
+        :param nr (str): NameRequest Number in the format of 'NR 000000000'
+        :param args:  __futures__
+        :param kwargs: __futures__
+        :return: 200 - success; 40X for errors
+
+        :HEADER: Valid JWT Bearer Token for a valid REALM
+        :JWT Scopes: - USER.APPROVER, USER.EDITOR
+
+        APPROVERS: Can change from almost any state, other than CANCELLED, EXPIRED and ( COMPLETED not yet furnished )
+        EDITOR: Can't change to a COMPLETED state (COMPLETED)
+      operationId: patch_request
+      tags:
+      - namexRequests
+    delete:
+      responses:
+        '200':
+          description: Success
+      operationId: delete_request
+      tags:
+      - namexRequests
+  "/requests/{nr}/analysis/{choice}/{analysis_type}":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    - name: choice
+      in: path
+      required: true
+      type: integer
+    - name: analysis_type
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_requests_analysis
+      tags:
+      - namexRequests
+  "/requests/{nr}/comments":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_nr_comment
+      tags:
+      - namexRequests
+  "/requests/{nr}/names/{choice}":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    - name: choice
+      in: path
+      required: true
+      type: integer
+    put:
+      responses:
+        '200':
+          description: Success
+      operationId: put_nr_names
+      tags:
+      - namexRequests
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_nr_names
+      tags:
+      - namexRequests
+    patch:
+      responses:
+        '200':
+          description: Success
+      operationId: patch_nr_names
+      tags:
+      - namexRequests
+  "/requests/{nr}/syncnr":
+    parameters:
+    - name: nr
+      in: path
+      required: true
+      type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_sync_nr
+      tags:
+      - namexRequests
+  "/statistics/":
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_wait_time_stats
+      tags:
+      - waitTimeStats
+  "/usersettings":
+    put:
+      responses:
+        '200':
+          description: Success
+      operationId: put_user_settings
+      tags:
+      - namexUserSettings
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_user_settings
+      tags:
+      - namexUserSettings
+  "/word-classification/{word}":
+    parameters:
+    - name: word
+      in: path
+      required: true
+      type: string
+    put:
+      responses:
+        '200':
+          description: Success
+      operationId: put_word_classification
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/word_classification_request"
+      tags:
+      - wordClassification
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_word_classification
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/word_classification_request"
+      tags:
+      - wordClassification
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_word_classification
+      parameters:
+      - name: payload
+        required: true
+        in: body
+        schema:
+          "$ref": "#/definitions/word_classification_request"
+      tags:
+      - wordClassification
+    delete:
+      responses:
+        '200':
+          description: Success
+      operationId: delete_word_classification
+      tags:
+      - wordClassification
+info:
+  title: Name Request API
+  version: '1.0'
+  description: The Core API for the Names Examination System
+produces:
+- application/json
+consumes:
+- application/json
+securityDefinitions:
+  apikey:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+- apikey: []
+tags:
+- name: namexRequests
+  description: Namex - Requests API
+- name: namexRequestOPS
+  description: Namex - OPS checks
+- name: namexDocuments
+  description: Namex - OPS checks
+- name: namexRequestMeta
+  description: Namex - Metadata
+- name: exactMatchMeta
+  description: Exact Match System - Metadata
+- name: events
+  description: Audit trail of events for a Name Request
+- name: wordClassification
+  description: API for Word Classifications
+- name: nameAnalysis
+  description: API for Analysing BC Names
+- name: nameAnalysis
+  description: API for Analysing BC Names
+- name: payments
+  description: API for Making Payments Using SBC Pay
+- name: mras
+  description: MRAS API
+- name: colin
+  description: COLIN API
+- name: entity
+  description: ENTITY API
+- name: waitTimeStats
+  description: API for Wait Time Statistics
+- name: namexUserSettings
+  description: Namex - get/update user settings
+- name: payment_society
+  description: Store data for society from home legancy app
+definitions:
+  Request:
+    properties:
+      submitter:
+        type: string
+        default: The submitter name
+      corpType:
+        type: string
+        default: The corporation type
+      reqType:
+        type: string
+        default: The name request type
+    type: object
+  document:
+    required:
+    - content
+    properties:
+      type:
+        type: string
+        description: The object type
+        example: type_unspecified
+        enum:
+        - type_unspecified
+        - plain_text
+      content:
+        type: string
+        description: string content of the document
+    type: object
+  word_classification_request:
+    properties:
+      classification:
+        type: string
+      examiner:
+        type: string
+      name:
+        type: string
+      word:
+        type: string
+    type: object
+  name_request:
+    properties:
+      id:
+        type: integer
+        default: id
+      nrNum:
+        type: integer
+        default: nrNum
+      entity_type_cd:
+        type: string
+        default: The entity type
+      request_action_cd:
+        type: string
+        default: The action requested by the user
+      stateCd:
+        type: string
+        default: The state of the NR
+      english:
+        type: boolean
+        default: Set when the name is English only
+      nameFlag:
+        type: boolean
+        default: Set when the name is a person
+      additionalInfo:
+        type: string
+        default: Additional NR Info
+      natureBusinessInfo:
+        type: string
+        default: The nature of business
+      tradeMark:
+        type: string
+        default: Registered Trademark
+      previousRequestId:
+        type: integer
+        default: Internal Id for Re-Applys
+      priorityCd:
+        type: string
+        default: Set to Yes if it is  priority going to examination
+      submit_count:
+        type: integer
+        default: Used to enforce the 3 times only rule for Re-Applys
+      xproJurisdiction:
+        type: string
+        default: The province or country code for XPRO requests
+      homeJurisNum:
+        type: string
+        default: For MRAS participants, their home jurisdiction corp_num
+      corpNum:
+        type: string
+        default: For companies already registered in BC, their BC corp_num
+      applicants:
+        "$ref": "#/definitions/applicant_model"
+      names:
+        "$ref": "#/definitions/name_model"
+    type: object
+  applicant_model:
+    properties:
+      partyId:
+        type: integer
+        default: partyId
+      lastName:
+        type: string
+      firstName:
+        type: string
+      middleName:
+        type: string
+        default: Applicant middle name or initial
+      contact:
+        type: string
+        default: Applicant contact person last and first name
+      clientFirstName:
+        type: string
+        default: Client first name
+      clientLastName:
+        type: string
+        default: Client last name
+      phoneNumber:
+        type: string
+        default: Contact phone number
+      faxNumber:
+        type: string
+        default: Contact fax number
+      emailAddress:
+        type: string
+        default: Contact email
+      addrLine1:
+        type: string
+        default: First address line
+      addrLine2:
+        type: string
+        default: Second address line
+      city:
+        type: string
+        default: City
+      stateProvinceCd:
+        type: string
+        default: Province or state code
+      postalCd:
+        type: string
+        default: Postal code or zip code
+      countryTypeCd:
+        type: string
+        default: Country code
+    type: object
+  name_model:
+    properties:
+      id:
+        type: integer
+        default: id
+      choice:
+        type: integer
+        default: Name choice
+      name:
+        type: string
+        default: Name
+      name_type_cd:
+        type: string
+        default: For company or assumed name
+        example: CO
+        enum:
+        - CO
+        - AS
+      state:
+        type: string
+        default: The state of the Name
+      designation:
+        type: string
+        default: Name designation based on entity type
+      conflict1_num:
+        type: string
+        default: The corp_num of the matching name
+      conflict1:
+        type: string
+        default: The matching corp name
+      consent_words:
+        "$ref": "#/definitions/consent_model"
+      corpNum:
+        type: string
+        default: Corp Num
+    type: object
+  consent_model:
+    properties:
+      consent_word:
+        type: string
+        default: A word that requires consent
+    type: object
+  PaymentRequest:
+    properties:
+      paymentInfo:
+        "$ref": "#/definitions/PaymentInfo"
+      businessInfo:
+        "$ref": "#/definitions/BusinessInfo"
+      filingInfo:
+        "$ref": "#/definitions/FilingInfo"
+    type: object
+  PaymentInfo:
+    properties:
+      methodOfPayment:
+        type: string
+    type: object
+  BusinessInfo:
+    properties:
+      businessIdentifier:
+        type: string
+      businessName:
+        type: string
+      contactInfo:
+        "$ref": "#/definitions/ContactInfo"
+    type: object
+  ContactInfo:
+    properties:
+      addressLine1:
+        type: string
+      city:
+        type: string
+      province:
+        type: string
+      country:
+        type: string
+      postalCode:
+        type: string
+    type: object
+  FilingInfo:
+    properties:
+      corpType:
+        type: string
+      date:
+        type: string
+      filingTypes:
+        type: array
+        items:
+          "$ref": "#/definitions/FilingType"
+    type: object
+  FilingType:
+    properties:
+      filingTypeCode:
+        type: string
+      priority:
+        type: boolean
+      filingDescription:
+        type: string
+    type: object
+  CalculateFeesRequest:
+    properties:
+      corp_type:
+        type: string
+      filing_type_code:
+        type: string
+      jurisdiction:
+        type: string
+      date:
+        type: string
+      priority:
+        type: string
+    type: object
+responses:
+  ParseError:
+    description: When a mask can't be parsed
+  MaskError:
+    description: When any error occurs on mask
